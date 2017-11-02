@@ -1,0 +1,5 @@
+.vim/bundle/*
+.ssh/
+.DS_Store
+install.sh
+secrets.yml

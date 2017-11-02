@@ -1,0 +1,31 @@
+Host l1gate
+    HostName     {{ l1g.hostname }}
+    User         {{ l1g.port }}
+    Port         {{ l1g.user }}
+    IdentityFile {{ l1g.identity_file }}
+    AddKeysToAgent yes
+    PasswordAuthentication no
+
+Host clgate
+  HostName     {{ cld.hostname }}
+  User         {{ cld.port }}
+  Port         {{ cld.user }}
+  IdentityFile {{ cld.identity_file }}
+  AddKeysToAgent yes
+  PasswordAuthentication no
+
+Host {{ gtlab_host }}
+  HostName     {{ gtlab_host }}
+  User         git
+  port         22
+  IdentityFile ~/.ssh/gitlab
+  AddKeysToAgent yes
+  ProxyCommand ssh clgate {{ cld.proxy_command_path }} %h %p
+
+Host github
+  User git
+  Port 22
+  HostName github.com
+  IdentityFile ~/.ssh/github
+  AddKeysToAgent yes
+  ProxyCommand ssh clgate {{ cld.proxy_command_path }} %h %p

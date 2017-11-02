@@ -1,0 +1,168 @@
+---
+- name: get the username running the deploy
+  local_action: command whoami
+  register: username_on_the_host
+
+- name: execute user
+  debug:
+    msg: "------{{ username_on_the_host.stdout }}------"
+
+- name: general user
+  block:
+
+    - name: upload dotfiles dependent on OS
+      template:
+        src: "Debian/{{ item.name }}.j2"
+        dest: "{{ ansible_env.HOME }}/{{ item.dest | default(item.name) }}"
+        mode: 0755
+      with_items:
+        - name: ".custom_profile"
+        - name: ".vimrc"
+        - name: ".ssh_config"
+          dest: ".ssh/config"
+
+    - name: upload dotfiles
+      template:
+        src: "{{ item.name }}.j2"
+        dest: "{{ ansible_env.HOME }}/{{ item.dest | default(item.name) }}"
+      with_items:
+        - name: ".gitconfig"
+        - name: ".tmux.conf"
+
+    - name: load custom profile
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.profile"
+        regexp: ". {{ ansible_env.HOME }}/.custom_profile"
+        line: ". {{ ansible_env.HOME }}/.custom_profile"
+        state: present
+
+    - name: symbolic link to .vim
+      file:
+        src: "{{ ansible_env.PWD }}/../.vim"
+        dest: "{{ ansible_env.HOME }}/.vim"
+        state: link
+
+    # ------------ neo bundle -------------
+    - name: neo bundle exists
+      stat:
+        path: "{{ ansible_env.HOME }}/.vim/bundle/neobundle.vim"
+      register: neobundle
+    - name: remove neobundle installer
+      file:
+        path: "{{ ansible_env.PWD }}/install.sh"
+        state: absent
+
+    - name: install neo bundle
+      block:
+        - name: download installer
+          get_url:
+            url: https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh
+            dest: "{{ ansible_env.PWD }}/install.sh"
+            mode: 0755
+
+        - name: install neobundle
+          shell: "{{ ansible_env.PWD }}/install.sh"
+      when: not neobundle.stat.exists
+
+
+    # -------- anyenv --------
+    - name: anyenv exists
+      stat:
+        path:  "{{ ansible_env.HOME }}/.anyenv"
+      register: anyenv_exists
+
+    - name: install anyenv
+      git:
+        repo: https://github.com/riywo/anyenv
+        dest: "{{ ansible_env.HOME }}/.anyenv"
+      when: not anyenv_exists.stat.exists
+
+    # --------------------  golang -------------------------
+    - name: golang exists
+      stat:
+        path: "/usr/local/bin/go/bin"
+      register: golang_exists
+
+    - name: install go
+      environment:
+        GOPATH: "{{ ansible_env.HOME }}/go"
+      block:
+        # - name: create /usr/local/bin/go directory
+        #   become_user: root
+        #   become: true
+        #   file:
+        #     path: /usr/local/bin/go
+        #     state: directory
+        #     mode: 0755
+
+        - name: download golang binary 1.9
+          get_url:
+            url: https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz
+            dest: /tmp/golang.tar.gz
+
+        - name: unzip golang
+          become_user: root
+          become: true
+          unarchive:
+            src: /tmp/golang.tar.gz
+            dest: "/usr/local/bin"
+            mode: 0755
+
+        - name: create gopath
+          file:
+            path: "{{ ansible_env.HOME }}/go"
+            state: directory
+            mode: 0755
+      when: not golang_exists.stat.exists
+
+    - name: go get -packages
+      shell: "/usr/local/bin/go/bin/go get -u {{ item }}"
+      with_items: "{{ go_packages }}"
+
+  when: username_on_the_host.stdout != "root"
+
+- name: root user operation
+  block:
+    - name: create /etc/apt/apt.conf
+      copy:
+        dest: /etc/apt/apt.conf
+        content: ""
+        force: no
+        group: root
+        owner: root
+        mode: 644
+
+    - name: apt repository settings
+      lineinfile:
+        path: /etc/apt/apt.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      with_items:
+          - regexp: "^Acquire::ftp::proxy"
+            line: 'Acquire::ftp::proxy "{{ http_proxy }}";'
+
+          - regexp: "^Acquire::http::proxy"
+            line: 'Acquire::http::proxy "{{ http_proxy }}";'
+          - regexp: "^Acquire::https::proxy"
+            line: 'Acquire::https::proxy "{{ https_proxy }}";'
+
+          - regexp: "^Acquire::http::No-Cache"
+            line: "Acquire::http::No-Cache true;"
+
+          - regexp: "^Acquire::http::Pipeline-Depth"
+            line: 'Acquire::http::Pipeline-Depth 0;'
+
+    - name: install packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ packages }}"
+
+    - name: download direnv
+      get_url:
+        url: https://github.com/direnv/direnv/releases/download/v2.13.1/direnv.linux-amd64
+        dest: "/usr/local/bin/direnv"
+        mode: 0755
+
+  when: username_on_the_host.stdout == "root"
