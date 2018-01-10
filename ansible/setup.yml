@@ -1,19 +1,14 @@
 ---
+
 - hosts: all
   become: true
   become_user: root
-  vars_files:
-    - group_vars/secrets.yml
   gather_facts: true
   roles:
     - configuration
 
 - hosts: all
   become: false
-  vars_files:
-    - group_vars/secrets.yml
   gather_facts: true
   roles:
     - configuration
-
-
