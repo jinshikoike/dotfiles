@@ -1,0 +1,35 @@
+---
+
+test: aaaaaaaaaaa
+
+go_packages:
+    - golang.org/x/tools/cmd/goimports
+    - golang.org/x/tools/cmd/godoc
+    - golang.org/x/tools/cmd/cover
+    - github.com/nsf/gocode
+    - github.com/golang/lint/golint
+
+packages:
+    - git
+    - gcc
+    - wget
+    - curl
+    - tmux
+    - docker
+    - libreadline-dev
+
+    # pyenv depdent apt packages
+    - build-essential
+    - libssl-dev
+    - zlib1g-dev
+    - libbz2-dev
+    - libreadline-dev
+    - libsqlite3-dev
+    - wget
+    - curl
+    - llvm
+    - libncurses5-dev
+    - libncursesw5-dev
+    - xz-utils
+    - tk-dev
+
