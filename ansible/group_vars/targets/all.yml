@@ -17,6 +17,7 @@ packages:
     - tmux
     - docker
     - libreadline-dev
+    - vim
 
     # pyenv depdent apt packages
     - build-essential

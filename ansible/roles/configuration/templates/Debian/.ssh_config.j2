@@ -1,3 +1,4 @@
+{% if l1g %}
 Host l1gate
     HostName     {{ l1g.hostname }}
     User         {{ l1g.user }}
@@ -5,7 +6,8 @@ Host l1gate
     IdentityFile {{ l1g.identity_file }}
     AddKeysToAgent yes
     PasswordAuthentication no
-
+{% endif %}
+{% if cld and l1g %}
 Host clgate
   HostName     {{ cld.hostname }}
   User         {{ cld.user }}
@@ -22,6 +24,7 @@ Host {{ gtlab_host }}
   IdentityFile ~/.ssh/gitlab
   AddKeysToAgent yes
   ProxyCommand ssh clgate {{ cld.proxy_command_path }} %h %p
+{% endif %}
 
 Host github
   User git
@@ -29,4 +32,3 @@ Host github
   HostName github.com
   IdentityFile ~/.ssh/github
   AddKeysToAgent yes
-  ProxyCommand ssh clgate {{ cld.proxy_command_path }} %h %p
