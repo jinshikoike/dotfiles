@@ -6,6 +6,7 @@ export ftp_proxy=$http_proxy
 export HTTP_PROXY=$http_proxy
 export HTTPS_PROXY=$https_proxy
 export rsync_proxy=$http_proxy
+export no_proxy=127.0.0.1, localhost
 
 if [ -f $HOME/.proxy.sh ]; then
   echo "test"
@@ -34,7 +35,7 @@ NIFTY_CLOUD_HOME=/usr/local/NIFTY_Cloud_api-tools
 export NIFTY_CLOUD_HOME
 PATH="$PATH:$NIFTY_CLOUD_HOME/bin"
 
-#java
+# java
 JAVA_HOME="/usr/local/lib/jdk1.8.0_144"
 PATH="$PATH:$JAVA_HOME/bin"
 export JAVA_HOME
