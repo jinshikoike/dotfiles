@@ -3,13 +3,8 @@
   local_action: command whoami
   register: username_on_the_host
 
-- name: execute user
-  debug:
-    msg: "------{{ username_on_the_host.stdout }}------"
-
 - name: general user
   block:
-
     - name: upload dotfiles dependent on OS
       template:
         src: "Debian/{{ item.name }}.j2"
@@ -18,16 +13,40 @@
       with_items:
         - name: ".custom_profile"
         - name: ".vimrc"
-        - name: ".ssh_config"
-          dest: ".ssh/config"
+          #- name: ".ssh_config"
+          #dest: ".ssh/config"
+
+    - name: ssh config exists
+      stat:
+        path: "{{ ansible_env.HOME }}/.ssh/config"
+      register: ssh_config_file_state
+
+    - name: ssh config
+      template:
+        src: "Debian/.ssh_config.j2"
+        dest: "{{ ansible_env.HOME }}/.ssh/config"
+        mode: 0755
+      when: not ssh_config_file_state.stat.exists
 
     - name: upload dotfiles
       template:
         src: "{{ item.name }}.j2"
         dest: "{{ ansible_env.HOME }}/{{ item.dest | default(item.name) }}"
       with_items:
-        - name: ".gitconfig"
+        # - name: ".gitconfig"
         - name: ".tmux.conf"
+
+    - name: git config exists
+      stat:
+        path: "{{ ansible_env.HOME }}/.gitconfig"
+      register: git_config_file_state
+    - name: git config
+      template:
+        src: "Debian/.gitconfig.j2"
+        dest: "{{ ansible_env.HOME }}/.ssh/config"
+        mode: 0755
+      when: not git_config_file_state.stat.exists
+
 
     - name: load custom profile
       lineinfile:
@@ -40,13 +59,14 @@
       file:
         src: "{{ ansible_env.PWD }}/../.vim"
         dest: "{{ ansible_env.HOME }}/.vim"
-        state: link
+        # state: link
 
     # ------------ neo bundle -------------
     - name: neo bundle exists
       stat:
         path: "{{ ansible_env.HOME }}/.vim/bundle/neobundle.vim"
       register: neobundle
+
     - name: remove neobundle installer
       file:
         path: "{{ ansible_env.PWD }}/install.sh"
@@ -119,50 +139,3 @@
       shell: "/usr/local/bin/go/bin/go get -u {{ item }}"
       with_items: "{{ go_packages }}"
 
-  when: username_on_the_host.stdout != "root"
-
-- name: root user operation
-  block:
-    - name: create /etc/apt/apt.conf
-      copy:
-        dest: /etc/apt/apt.conf
-        content: ""
-        force: no
-        group: root
-        owner: root
-        mode: 644
-
-    - name: apt repository settings
-      lineinfile:
-        path: /etc/apt/apt.conf
-        regexp: "{{ item.regexp }}"
-        line: "{{ item.line }}"
-        state: present
-      with_items:
-          - regexp: "^Acquire::ftp::proxy"
-            line: 'Acquire::ftp::proxy "{{ http_proxy }}";'
-
-          - regexp: "^Acquire::http::proxy"
-            line: 'Acquire::http::proxy "{{ http_proxy }}";'
-          - regexp: "^Acquire::https::proxy"
-            line: 'Acquire::https::proxy "{{ https_proxy }}";'
-
-          - regexp: "^Acquire::http::No-Cache"
-            line: "Acquire::http::No-Cache true;"
-
-          - regexp: "^Acquire::http::Pipeline-Depth"
-            line: 'Acquire::http::Pipeline-Depth 0;'
-
-    - name: install packages
-      apt:
-        name: "{{ item }}"
-        state: present
-      with_items: "{{ packages }}"
-
-    - name: download direnv
-      get_url:
-        url: https://github.com/direnv/direnv/releases/download/v2.13.1/direnv.linux-amd64
-        dest: "/usr/local/bin/direnv"
-        mode: 0755
-
-  when: username_on_the_host.stdout == "root"
