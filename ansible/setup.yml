@@ -5,7 +5,7 @@
   become_user: root
   gather_facts: true
   roles:
-    - configuration
+    - base
 
 - hosts: targets
   become: false
