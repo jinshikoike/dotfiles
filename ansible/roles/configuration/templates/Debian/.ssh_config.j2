@@ -1,18 +1,19 @@
 Host l1gate
     HostName     {{ l1g.hostname }}
-    User         {{ l1g.port }}
-    Port         {{ l1g.user }}
+    User         {{ l1g.user }}
+    Port         {{ l1g.port }}
     IdentityFile {{ l1g.identity_file }}
     AddKeysToAgent yes
     PasswordAuthentication no
 
 Host clgate
   HostName     {{ cld.hostname }}
-  User         {{ cld.port }}
-  Port         {{ cld.user }}
+  User         {{ cld.user }}
+  Port         {{ cld.port }}
   IdentityFile {{ cld.identity_file }}
   AddKeysToAgent yes
   PasswordAuthentication no
+  ProxyCommand ssh l1gate {{ l1g.proxy_command_path }} %h %p
 
 Host {{ gtlab_host }}
   HostName     {{ gtlab_host }}
