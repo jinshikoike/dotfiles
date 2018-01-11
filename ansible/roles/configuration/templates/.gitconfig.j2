@@ -28,3 +28,20 @@
 {% endif %}
 [credential]
   helper = cache --timeout=9600
+
+# go get from private repo
+# https://gist.github.com/shurcooL/6927554
+# when execute command: `git config --global credential.helper store`
+#[credential]
+#	helper = cache --timeout=9600
+
+
+#```
+#Credentials may be stored in the ~/.git-credentials file.
+#
+#git config --global credential.helper store
+#echo "https://${GITHUB_TOKEN}:x-oauth-basic@github.com" >> ~/.git-credentials
+#git:// protocol is less secure
+#
+#git config --global url."https://github.com".insteadOf git://github.com
+#```
