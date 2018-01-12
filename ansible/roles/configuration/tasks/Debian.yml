@@ -42,7 +42,7 @@
       register: git_config_file_state
     - name: git config
       template:
-        src: "Debian/.gitconfig.j2"
+        src: ".gitconfig.j2"
         dest: "{{ ansible_env.HOME }}/.ssh/config"
         mode: 0755
       when: not git_config_file_state.stat.exists
