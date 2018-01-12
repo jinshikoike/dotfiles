@@ -59,7 +59,7 @@
       file:
         src: "{{ ansible_env.PWD }}/../.vim"
         dest: "{{ ansible_env.HOME }}/.vim"
-        # state: link
+        state: link
 
     # ------------ neo bundle -------------
     - name: neo bundle exists
