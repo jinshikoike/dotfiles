@@ -83,6 +83,16 @@ nnoremap sQ :<C-u>bd<CR>
 nnoremap sb :<C-u>Unite buffer_tab -buffer-name=file<CR>
 nnoremap sB :<C-u>Unite buffer -buffer-name=file<CR>
 
+"Use the "black hole register", "_ to really delete something: "_d.
+"Use "_dP to paste something and keep it available for further pasting.
+"d => "delete"
+"leader d => "cut"
+nnoremap <leader>d "_d↲
+nnoremap x "_x↲
+vnoremap <leader>d "_d↲
+vnoremap <leader>p "_dP↲
+
+
 "augroup = group autocmd.
 augroup auto_vimrc_loading
         autocmd!
