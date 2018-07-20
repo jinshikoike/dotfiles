@@ -1,0 +1,8 @@
+#!/bin/bash
+if [ $# -lt 2 ]
+then
+  echo "usage"
+  echo "t2s output_file input_file"
+  exit
+fi
+say --file-format=m4af -o $1 -f $2
