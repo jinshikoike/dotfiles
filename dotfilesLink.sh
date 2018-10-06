@@ -38,15 +38,10 @@ ln -sfF `pwd`/.vimrc ~/.vimrc
 ln -sfF `pwd`/.vim ~/.vim
 ln -sfF `pwd`/.gitconfig ~/.gitconfig
 
-file_path="install.sh"
-if [ -f "$file_path" ]
-then
-    echo "neo bundle is already installed"
-else
-    curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > install.sh
-    chmod 755 install.sh
-    ./install.sh
-    rm ./install.sh
-fi
 
+
+echo "install dein.vim"
+curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
+# For example, we just use `~/.cache/dein` as installation directory
+sh ./installer.sh ~/.cache/dein
 
