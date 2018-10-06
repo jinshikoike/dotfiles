@@ -35,6 +35,7 @@ sed -i -e 's/^alias subl.*//g' ~/.bash_profile
 echo "alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'" >> ~/.bash_profile
 
 ln -sfF `pwd`/.vimrc ~/.vimrc
+rm ~/.vim
 ln -sfF `pwd`/.vim ~/.vim
 ln -sfF `pwd`/.gitconfig ~/.gitconfig
 
@@ -44,4 +45,4 @@ echo "install dein.vim"
 curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
 # For example, we just use `~/.cache/dein` as installation directory
 sh ./installer.sh ~/.cache/dein
-
+rm ./installer.sh
