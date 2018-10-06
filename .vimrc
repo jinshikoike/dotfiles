@@ -41,7 +41,8 @@ set smartindent "改行時に入力された行の末尾に合わせて次の行
 
 " visible tab white space break line
 set list
-set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+" set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%
 
 "検索
 :set noignorecase
@@ -103,69 +104,147 @@ augroup auto_vimrc_loading
         autocmd BufWritePost *gvimrc if has('gui_running') source $MYGVIMRC
 augroup END
 
-if has('vim_starting')
-        " 初回起動時のみruntimepathにneobundleのパスを指定する
-        set runtimepath+=~/.vim/bundle/neobundle.vim/
-endif
+"if has('vim_starting')
+"        " 初回起動時のみruntimepathにneobundleのパスを指定する
+"        set runtimepath+=~/.vim/bundle/neobundle.vim/
+"endif
 
-" NeoBundleを初期化
-call neobundle#begin(expand('~/.vim/bundle/'))
-
+"" NeoBundleを初期化
+"call neobundle#begin(expand('~/.vim/bundle/'))
+"
 " インストールするプラグインをここに記述
-NeoBundle "tyru/caw.vim.git"
-nmap <C-/> <Plug>(caw:i:toggle)
-vmap <C-/> <Plug>(caw:i:toggle)
+"NeoBundle "tyru/caw.vim.git"
+"nmap <C-/> <Plug>(caw:i:toggle)
+"vmap <C-/> <Plug>(caw:i:toggle)
+"
+"NeoBundle 'Shougo/unite.vim'
+""NeoBundle 'Shougo/vimfiler'
+"NeoBundle 'cohama/lexima.vim'
+"if neobundle#is_sourced("lexima.vim")
+"        let g:lexima_no_default_rules = 1
+"        call lexima#set_default_rules()
+"endif
+"
+"NeoBundle 'scrooloose/nerdtree'
+"map <C-n> :NERDTreeToggle<CR>
+""t: open in a new tab,   s:縦分割で開く, o: open in a current window
+"NeoBundle 'tomtom/tcomment_vim'
+"" インデントに色を付けて見やすくする
+"NeoBundle 'nathanaelkane/vim-indent-guides'
+"" vimを立ち上げたときに、自動的にvim-indent-guidesをオンにする
+"
+"" 行末の半角スペースを可視化
+"NeoBundle 'bronson/vim-trailing-whitespace'
+"let g:indent_guides_enable_on_vim_startup = 1
+"
+"NeoBundle 'editorconfig/editorconfig-vim'
+"
+"" 文字を囲む
+"NeoBundle 'surround.vim'
+"
+"" browserを開く再mac,windowsで同じ方法で開きたい時に使用
+"NeoBundle 'tyru/open-browser.vim'
+"
+"" vimでマークダウンのプレビュー
+"NeoBundle 'kannokanno/previm'
+"let g:previm_open_cmd = ''
+"augroup PrevimSettings
+"  autocmd!
+"  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+"augroup END
+"nnoremap [previm] <Nop>
+"nmap <Space>p [previm]
+"nnoremap <silent> [previm]o :<C-u>PrevimOpen<CR>
+"nnoremap <silent> [previm]r :call previm#refresh()<CR>
+"
+"
+"" NeoBundleをNeoBundle自体で管理する
+"NeoBundleFetch 'Shougo/neobundle.vim'
+"
+"call neobundle#end()
+"
+"" NeoBundleCheck を走らせ起動時に未インストールプラグインをインストールする
+"NeoBundleCheck
+"" ファイルタイプ別のプラグイン/インデントを有効にする
+"filetype plugin indent on
 
-NeoBundle 'Shougo/unite.vim'
-"NeoBundle 'Shougo/vimfiler'
-NeoBundle 'cohama/lexima.vim'
-if neobundle#is_sourced("lexima.vim")
-        let g:lexima_no_default_rules = 1
-        call lexima#set_default_rules()
+if &compatible
+ set nocompatible
+endif
+" Add the dein installation directory into runtimepath
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+
+if dein#load_state('~/.cache/dein')
+  call dein#begin('~/.cache/dein')
+
+  call dein#add('~/.cache/dein')
+  call dein#add('Shougo/deoplete.nvim')
+  if !has('nvim')
+    call dein#add('roxma/nvim-yarp')
+    call dein#add('roxma/vim-hug-neovim-rpc')
+  endif
+
+   " インストールするプラグインをここに記述
+  call dein#add('Shougo/unite.vim')
+   "call dein#add('Shougo/vimfiler')
+  call dein#add('cohama/lexima.vim')
+  if has("lexima.vim")
+     let g:lexima_no_default_rules = 1
+     call lexima#set_default_rules()
+  endif
+
+  call dein#add('scrooloose/nerdtree')
+  "call dein#add('tomtom/tcomment_vim')
+  "
+  " インデントに色を付けて見やすくする
+  call dein#add('nathanaelkane/vim-indent-guides')
+  " vimを立ち上げたときに、自動的にvim-indent-guidesをオンにする
+
+  " 行末の半角スペースを可視化
+  call dein#add('bronson/vim-trailing-whitespace')
+  " let g:indent_guides_enable_on_vim_startup = 1
+
+  call dein#add('editorconfig/editorconfig-vim')
+
+  " 文字を囲む
+  call dein#add('vim-scripts/surround.vim')
+
+  " browserを開く再mac,windowsで同じ方法で開きたい時に使用
+  call dein#add('tyru/open-browser.vim')
+
+  " vimでマークダウンのプレビュー
+  call dein#add('kannokanno/previm')
+  let g:previm_open_cmd = ''
+  augroup PrevimSettings
+    autocmd!
+    autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+  augroup END
+  nnoremap [previm] <Nop>
+  nmap <Space>p [previm]
+  nnoremap <silent> [previm]o :<C-u>PrevimOpen<CR>
+  nnoremap <silent> [previm]r :call previm#refresh()<CR>
+
+
+  call dein#add('Shougo/dein.vim', {'rtp': ''})
+  call dein#end()
+  call dein#save_state()
 endif
 
-NeoBundle 'scrooloose/nerdtree'
+filetype plugin indent on
+syntax enable
+
+if dein#check_install()
+	  call dein#install()
+endif
+
+" NerdTree
 map <C-n> :NERDTreeToggle<CR>
 "t: open in a new tab,   s:縦分割で開く, o: open in a current window
-NeoBundle 'tomtom/tcomment_vim'
-" インデントに色を付けて見やすくする
-NeoBundle 'nathanaelkane/vim-indent-guides'
-" vimを立ち上げたときに、自動的にvim-indent-guidesをオンにする
 
 " 行末の半角スペースを可視化
-NeoBundle 'bronson/vim-trailing-whitespace'
+"  call dein#add('bronson/vim-trailing-whitespace')
 let g:indent_guides_enable_on_vim_startup = 1
 
-NeoBundle 'editorconfig/editorconfig-vim'
-
-" 文字を囲む
-NeoBundle 'surround.vim'
-
-" browserを開く再mac,windowsで同じ方法で開きたい時に使用
-NeoBundle 'tyru/open-browser.vim'
-
-" vimでマークダウンのプレビュー
-NeoBundle 'kannokanno/previm'
-let g:previm_open_cmd = ''
-augroup PrevimSettings
-  autocmd!
-  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
-augroup END
-nnoremap [previm] <Nop>
-nmap <Space>p [previm]
-nnoremap <silent> [previm]o :<C-u>PrevimOpen<CR>
-nnoremap <silent> [previm]r :call previm#refresh()<CR>
-
-
-" NeoBundleをNeoBundle自体で管理する
-NeoBundleFetch 'Shougo/neobundle.vim'
-
-call neobundle#end()
-
-" NeoBundleCheck を走らせ起動時に未インストールプラグインをインストールする
-NeoBundleCheck
-" ファイルタイプ別のプラグイン/インデントを有効にする
-filetype plugin indent on
 
 " https://sites.google.com/site/fudist/Home/vim-nihongo-ban/-vimrc-sample
 " """"""""""""""""""""""""""""""
@@ -212,3 +291,4 @@ let g:go_hightlight_interfaces = 1
 let g:go_hightlight_operators = 1
 let g:go_hightlight_build_constraints = 1
 let g:go_fmt_command = "goimports"
+
