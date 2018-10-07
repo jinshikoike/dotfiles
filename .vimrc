@@ -1,7 +1,14 @@
-"clip bord copy
-"set clipboard=unnamed, autoselect
-"set clipboard=unnamed
-set clipboard=unnamedplus
+" delete on vim insertmode with backspace and <Ctr+h>
+set backspace=indent,eol,start
+
+"clipbord copy
+if has("clipboard")
+  set clipboard=unnamed " copy to the system clipboard
+
+  if has("unnamedplus") " X11 support
+    set clipboard+=unnamedplus
+  endif
+endif
 
 set wildmenu
 set wildmode=longest:full,full

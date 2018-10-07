@@ -31,6 +31,10 @@ if ! [ -x `which anyenv` ]; then
   exec $SHELL -l
 fi
 
+if ! [ -x "/usr/local/bin/vim" ]; then
+  brew install vim
+fi
+
 sed -i -e 's/^alias subl.*//g' ~/.bash_profile
 echo "alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'" >> ~/.bash_profile
 
@@ -46,3 +50,9 @@ curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh >
 # For example, we just use `~/.cache/dein` as installation directory
 sh ./installer.sh ~/.cache/dein
 rm ./installer.sh
+
+echo "install tmux"
+brew install reattach-to-user-namespace
+brew install tmux
+
+ln -sfF `pwd`/.tmux.conf ~/.tmux.conf
