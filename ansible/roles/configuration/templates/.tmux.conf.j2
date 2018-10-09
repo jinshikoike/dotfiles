@@ -38,6 +38,11 @@ bind -r F kill-window
 # finish pane
 bind -r C-f kill-pane
 
+# ウィンドウを消したときに，自動で番号を詰める
+set -g renumber-windows on
+# automatic-rename-formatで指定した形式で端末のタイトルを自動で変更
+setw -g automatic-rename on
+
 # Vimのキーバインドでペインを移動する
 bind h select-pane -L
 bind j select-pane -D
