@@ -49,7 +49,9 @@ set smartindent "改行時に入力された行の末尾に合わせて次の行
 " visible tab white space break line
 set list
 " set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%
+set listchars=tab:»-,trail:~,extends:»,precedes:«,nbsp:%
+" change =tab:»-,trail:~,extends:»,precedes:«,nbsp:% color
+" highlight SpecialKey ctermfg=33
 
 "検索
 :set noignorecase
@@ -98,10 +100,48 @@ nnoremap sB :<C-u>Unite buffer -buffer-name=file<CR>
 "Use "_dP to paste something and keep it available for further pasting.
 "d => "delete"
 "leader d => "cut"
-nnoremap <leader>d "_d↲
-nnoremap x "_x↲
-vnoremap <leader>d "_d↲
-vnoremap <leader>p "_dP↲
+"nnoremap <leader>d "_d↲
+"nnoremap x "_x↲
+"vnoremap <leader>d "_d↲
+"vnoremap <leader>p "_dP↲
+
+" copy and paste settings
+nnoremap <leader>d "_d
+nnoremap x "_x
+vnoremap <leader>d "_d
+vnoremap <leader>p "_dP
+vnoremap <silent> y "yy:let @+ = @y<CR>
+
+" toggle paste, nopaste
+" The first line sets a mapping so that pressing F2 in normal mode will invert the 'paste' option, and will then show the value of that option. The second line allows you to press F2 when in insert mode, to toggle 'paste' on and off. The third line enables displaying whether 'paste' is turned on in insert mode.
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+set showmode
+
+" インクリメンタル検索にする。記述無しの場合、例えば「hoge」と検索をかけるとすると「/hoge」まで打ち込んでからEnter押さないとハイライトされないので分からない。これを入れておけば一字打つごとに検索をかけられるのでかなり見やすい。
+set incsearch
+
+"インサートモードでも移動
+inoremap <C-n>  <down>
+inoremap <C-p>  <up>
+inoremap <C-b>  <left>
+inoremap <C-f>  <right>
+
+" カーソル下の単語をハイライトする
+" https://qiita.com/itmammoth/items/312246b4b7688875d023#9delete-backspace
+nnoremap <silent> <Space><Space> "zyiw:let @/ = '\<' . @z . '\>'<CR>:set hlsearch<CR>
+" カーソル下の単語をハイライトしてから置換する
+nmap # <Space><Space>:%s/<C-r>///g<Left><Left>
+
+"括弧の補完
+" "inoremap { {}<Left>
+" "inoremap {<Enter> {}<Left><CR><ESC><S-o>
+" "inoremap ( ()<ESC>i
+" "inoremap (<Enter> ()<Left><CR><ESC><S-o>
+" "inoremap ' ''<LEFT>
+" "inoremap " ""<LEFT>
+
+" nnoremap == gg=G    "=を二回連続入力でバッファ全体をインデント整理
 
 
 "augroup = group autocmd.
